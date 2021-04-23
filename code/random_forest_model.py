@@ -3,6 +3,8 @@ import pandas as pd
 from sklearn.metrics import mean_squared_error
 import math
 
+pd.options.mode.chained_assignment = None
+
 train_data_path = '../datas/prepare/train.csv'
 train_data = pd.read_csv(train_data_path)
 
@@ -17,21 +19,23 @@ X_train = train_data[taxi_features]
 regr = RandomForestRegressor(n_estimators=100,max_depth=30, n_jobs=-1)
 regr.fit(X_train,y_train)
 
-test_data_path = '../datas/prepare/test.csv'
-test_data = pd.read_csv(test_data_path)
-X_test = test_data[taxi_features]
-y_test = test_data.fare_amount
-y_predict = regr.predict(X_test)
-RMSE = math.sqrt(mean_squared_error(y_predict,y_test))
-print(RMSE)
+# test_data_path = '../datas/prepare/test.csv'
+# test_data = pd.read_csv(test_data_path)
+# X_test = test_data[taxi_features]
+# y_test = test_data.fare_amount
+# y_predict = regr.predict(X_test)
+# RMSE = math.sqrt(mean_squared_error(y_predict,y_test))
+# print(RMSE)
 
-# final_data_path = 'datas/prepare/final.csv'
-# result_path = 'datas/result.csv'
-# final_data = pd.read_csv(final_data_path)
-# X_result = final_data[taxi_features]
-# y_submission = regr.predict(X_result)
-# X_result['fare_amount'] = y_submission
-# result = X_result[["key", "fare_amount"]]
-# # y_submission = pd.DataFrame(y_submission,columns=['fare_amount'])
-# # result = pd.concat([X_result[['key']],y_submission])
-# result.to_csv(result_path)
+final_data_path = '../datas/prepare/final.csv'
+result_path = '../datas/result.csv'
+final_data = pd.read_csv(final_data_path)
+X_result = final_data[taxi_features]
+y_submission = regr.predict(X_result)
+print(y_submission)
+result = pd.DataFrame(final_data.loc[:, 'key'])
+# result = result.insert(2,'fare_amount',y_submission)
+result['fare_amount'] = y_submission
+# y_submission = pd.DataFrame(y_submission,columns=['fare_amount'])
+# result = pd.concat([X_result[['key']],y_submission])
+result.to_csv(result_path)

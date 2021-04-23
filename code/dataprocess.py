@@ -67,14 +67,16 @@ taxi_data['distance'] = distance
 
 for i in range(taxi_data.shape[0]):
     data = taxi_data.iloc[i]
-    if data.distance > 200 and data.fare_amount > 2.5:
-        taxi_data.iloc[i].distance = (data.fare_amount-2.5)/1.56
+    if data.distance > 200:
+        taxi_data.loc[i,'distance'] = (data.fare_amount-2.5)/1.56
     if data.fare_amount == 0 and data.distance == 0:
         taxi_data.drop(i)
     if data.fare_amount !=0 and data.fare_amount < 2.5 and data.distance == 0:
         taxi_data.drop(i)
-    if data.fare_amount == 0 and distance != 0:
-        taxi_data.iloc[i].fare_amount = 2.5+1.56*data.distance
+    if data.fare_amount == 0 and data.distance != 0:
+        taxi_data.loc[i,'fare_amount'] = 2.5+1.56*data.distance
+    if data.fare_amount != 0 and data.distance == 0:
+        taxi_data.loc[i,'distance'] = (data.fare_amount-2.5)/1.56
 
 
 #data saving
