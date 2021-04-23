@@ -98,6 +98,21 @@ plt.show()
 source = train[np.logical_and(train['distance'] < 200,train['fare_amount'] < 100)]
 X = source['distance']
 y = source['fare_amount']
-plt.scatter(X,y,alpha=0.1)
+plt.scatter(X,y,alpha=0.1,s=0.4)
+plt.xlabel("distance")
+plt.ylabel("fare_amount")
 plt.savefig('../figs/distance_fare.png')
+plt.show()
+
+source = train[train['fare_amount'] < 100]
+sns.boxplot(x='weekday' , y='fare_amount' , data=source)
+plt.savefig('../figs/weekday_fare.png')
+plt.show()
+
+sns.boxplot(x='year' , y='fare_amount' , data=source)
+plt.savefig('../figs/year_fare.png')
+plt.show()
+
+sns.boxplot(x='month' , y='fare_amount' , data=source)
+plt.savefig('../figs/month_fare.png')
 plt.show()

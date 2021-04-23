@@ -2,7 +2,13 @@ from sklearn.ensemble import RandomForestRegressor
 import pandas as pd
 from sklearn.metrics import mean_squared_error
 import math
+import numpy as np
+from sklearn.tree import export_graphviz
+from subprocess import call
+import graphviz
+import os
 
+os.environ['PATH'] = os.pathsep + r'D:\graphviz\graphviz\bin'
 pd.options.mode.chained_assignment = None
 
 train_data_path = '../datas/prepare/train.csv'
@@ -12,10 +18,6 @@ train_data = pd.read_csv(train_data_path)
 y_train = train_data.fare_amount
 taxi_features = ['pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','passenger_count','distance','year','weekday','hour']
 X_train = train_data[taxi_features]
-# X_train = X[:799999]
-# y_train = y[:799999]
-# X_test = X[800000:]
-# y_test = y[800000:]
 regr = RandomForestRegressor(n_estimators=100,max_depth=30, n_jobs=-1)
 regr.fit(X_train,y_train)
 
@@ -34,8 +36,21 @@ X_result = final_data[taxi_features]
 y_submission = regr.predict(X_result)
 print(y_submission)
 result = pd.DataFrame(final_data.loc[:, 'key'])
-# result = result.insert(2,'fare_amount',y_submission)
 result['fare_amount'] = y_submission
-# y_submission = pd.DataFrame(y_submission,columns=['fare_amount'])
-# result = pd.concat([X_result[['key']],y_submission])
 result.to_csv(result_path)
+
+importances = regr.feature_importances_
+indices = np.argsort(importances)[::-1]
+for f in range(X_train.shape[1]):
+    print("%2d) %-*s %f" % (f + 1, 30, taxi_features[indices[f]], importances[indices[f]]))
+
+# print(regr.estimators_.__len__())
+# estimator = regr.estimators_[5]
+# # export_graphviz(estimator,
+# #                 out_file='../model_pic/tree.dot',
+# #                 feature_names = taxi_features,
+# #                 rounded = True, proportion = False,
+# #                 precision = 2, filled = True)
+# dot_data = export_graphviz(estimator, out_file=None)
+# graph = graphviz.Source(dot_data)
+# graph.render('../model_pic/5')
